@@ -3,6 +3,7 @@ import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import {List, ListItem} from 'material-ui/List';
 import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 
 const API_URL = 'https://poniedzialek-d7900.firebaseio.com';
@@ -78,6 +79,21 @@ class App extends Component {
     });
   }
 
+  handleCheck = (task) => {
+    // task.completed = !task.completed;
+    // fetch(`${API_URL}/tasks/${task.id}.json`, {
+    //   method: 'PUT',
+    //   body: JSON.stringify(task)
+    // })
+    fetch(`${API_URL}/tasks/${task.id}.json`, {
+      method: 'PATCH',
+      body: JSON.stringify({completed: !task.completed})
+    })
+    .then(() => {
+      this.loadData();
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -94,8 +110,17 @@ class App extends Component {
             <ListItem
               key={task.id}
               primaryText={task.taskName}
-              leftCheckbox={<Checkbox />}
-              rightIcon={<DeleteIcon onClick={() => this.handleDelete(task.id)} />}
+              leftCheckbox={
+                <Checkbox
+                  defaultChecked={task.completed}
+                  onCheck={() => this.handleCheck(task)}
+                />
+              }
+              rightIconButton={
+                <IconButton>
+                  <DeleteIcon onClick={() => this.handleDelete(task.id)} />
+                </IconButton>
+              }
               />
           ))}
         </List>
